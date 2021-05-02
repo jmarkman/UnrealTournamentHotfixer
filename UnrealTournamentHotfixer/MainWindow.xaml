@@ -43,6 +43,7 @@
                 Content="Apply Hotfixes" 
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Center"
-                IsEnabled="{Binding CanApplyHotfix }"/>
+                IsEnabled="{Binding CanApplyHotfix}"
+                Command="{Binding ApplyHotfixCommand}"/>
     </Grid>
 </Window>
