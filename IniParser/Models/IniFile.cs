@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IniParser.Formatting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,6 +41,12 @@ namespace IniParser.Models
         {
             sectionCollection = new IniSectionCollection();
             Globals = new IniKeyValueCollection();
+        }
+
+        public override string ToString()
+        {
+            IniStringBuilder isb = new();
+            return isb.ToString(this);
         }
     }
 }

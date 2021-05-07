@@ -26,7 +26,7 @@ namespace IniParser.Models
         {
             get 
             {
-                if (kvpCollection.ContainsKey(key))
+                if (ContainsKey(key))
                 {
                     return kvpCollection[key].Value;
                 }
@@ -35,16 +35,21 @@ namespace IniParser.Models
             }
             set 
             {
-                if (AddKey(key))
+                if (ContainsKey(key) && string.IsNullOrEmpty(kvpCollection[key].Value))
                 {
-                    var addedKey = kvpCollection[key];
-                    if (!string.IsNullOrEmpty(addedKey.Value))
+                    kvpCollection[key].Value = value;
+                }
+                else if (ContainsKey(key))
+                {
+                    var existingKeyValuePair = kvpCollection[key];
+                    existingKeyValuePair.Values.Add(value);
+                }
+                else
+                {
+                    AddKey(key);
+                    if (value != null)
                     {
-                        addedKey.Values.Add(value);
-                    }
-                    else
-                    {
-                        addedKey.Value = value;
+                        kvpCollection[key].Value = value;
                     }
                 }
             }
@@ -142,6 +147,14 @@ namespace IniParser.Models
             }
 
             return default;
+        }
+
+        public IEnumerator<IniKeyValuePair> GetEnumerator()
+        {
+            foreach (var key in kvpCollection.Keys)
+            {
+                yield return kvpCollection[key];
+            }
         }
     }
 }

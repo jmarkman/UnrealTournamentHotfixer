@@ -9,14 +9,15 @@ namespace IniParser.Models
     public class IniSection
     {
         public string Name { get; set; }
+        public bool IsComment { get; private set; }
         public IniKeyValueCollection KeyValueCollection { get; set; }
 
-        public IniSection(string sectionName) : this(sectionName, EqualityComparer<string>.Default)
+        public IniSection(string sectionName, bool isComment = false) : this(sectionName, EqualityComparer<string>.Default)
         {
 
         }
 
-        public IniSection(string sectionName, IEqualityComparer<string> equalityComparer)
+        public IniSection(string sectionName, IEqualityComparer<string> equalityComparer, bool isComment = false)
         {
             if (string.IsNullOrEmpty(sectionName))
             {
@@ -24,6 +25,7 @@ namespace IniParser.Models
             }
 
             Name = sectionName;
+            IsComment = isComment;
             KeyValueCollection = new IniKeyValueCollection(equalityComparer);
         }
     }

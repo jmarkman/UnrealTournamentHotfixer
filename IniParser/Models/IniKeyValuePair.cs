@@ -11,8 +11,10 @@ namespace IniParser.Models
         public string Key { get; private set; }
         public string Value { get; set; }
         public List<string> Values { get; set; }
+        public bool IsComment { get; private set; }
 
-        public IniKeyValuePair(string keyName, string keyValue = "")
+
+        public IniKeyValuePair(string keyName, string keyValue = "", bool isComment = false)
         {
             if (string.IsNullOrEmpty(keyName))
             {
@@ -21,12 +23,22 @@ namespace IniParser.Models
 
             Key = keyName;
             Value = keyValue;
+            Values = new List<string>();
+            IsComment = isComment;
         }
 
         public IniKeyValuePair(IniKeyValuePair kvp)
         {
             Key = kvp.Key;
             Value = kvp.Value;
+        }
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            foreach (var value in Values)
+            {
+                yield return value;
+            }
         }
     }
 }

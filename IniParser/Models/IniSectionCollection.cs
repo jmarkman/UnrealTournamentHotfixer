@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,6 +49,14 @@ namespace IniParser.Models
         public void AddSection(string sectionName)
         {
             sectionCollection.Add(sectionName, new IniSection(sectionName));
+        }
+
+        public IEnumerator<IniSection> GetEnumerator()
+        {
+            foreach (var section in sectionCollection.Keys)
+            {
+                yield return sectionCollection[section];
+            }
         }
     }
 }
