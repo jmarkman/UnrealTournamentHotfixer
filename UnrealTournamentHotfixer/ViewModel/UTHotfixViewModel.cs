@@ -56,7 +56,10 @@ namespace UnrealTournamentHotfixer.ViewModel
 
             configEditor.SaveChanges();
 
-            MessageBox.Show("Hotfixes applied");
+            MessageBox.Show(@"Hotfixes Applied.
+
+If you join a server and you're stuck at 85 fps, press the 'p' key to unlock the frame rate. You'll have to do this every round.
+", "Success");
 
             FilePath = string.Empty;
         }

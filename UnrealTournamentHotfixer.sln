@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnrealTournamentHotfixer", "UnrealTournamentHotfixer\UnrealTournamentHotfixer.csproj", "{9A4FA9DC-EDF6-49B8-ACBE-DFE6F975012F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IniParser", "IniParser\IniParser.csproj", "{BA44DED4-E203-426E-8B74-251B15150F93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IniParser", "IniParser\IniParser.csproj", "{BA44DED4-E203-426E-8B74-251B15150F93}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EF3C80A6-8576-4A12-9342-D1583924FAFE}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
