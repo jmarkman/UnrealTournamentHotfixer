@@ -35,14 +35,9 @@ namespace IniParser.Models
             }
             set 
             {
-                if (ContainsKey(key) && string.IsNullOrEmpty(kvpCollection[key].Value))
+                if (ContainsKey(key))
                 {
                     kvpCollection[key].Value = value;
-                }
-                else if (ContainsKey(key))
-                {
-                    var existingKeyValuePair = kvpCollection[key];
-                    existingKeyValuePair.Values.Add(value);
                 }
                 else
                 {

@@ -1,27 +1,24 @@
 ﻿using IniParser;
-using IniParser.Model;
-using IniParser.Model.Configuration;
-using IniParser.Parser;
+using IniParser.Models;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace UnrealTournamentHotfixer.Services
 {
     public class ConfigEditor
     {
         /// <summary>
-        /// The filename and extension of the "User" config file
+        /// The path to the "User" config file
         /// </summary>
-        private readonly string UserConfigFile = "User.ini";
+        private readonly string PathToUserIni;
 
         /// <summary>
-        /// The filename and extension of the "UT2004" config file
+        /// The path to the "UT2004" config file
         /// </summary>
-        private readonly string UT2004ConfigFile = "UT2004.ini";
-
-        /// <summary>
-        /// The "System" directory in the game installation location
-        /// </summary>
-        private readonly string FilePath = string.Empty;
+        private readonly string PathTo2k4Ini;
 
         /// <summary>
         /// The console command for changing packet send speed in UT2k4
@@ -42,32 +39,28 @@ namespace UnrealTournamentHotfixer.Services
         /// <summary>
         /// The .ini file parser
         /// </summary>
-        private FileIniDataParser configParser;
+        private IniFileParser configParser;
 
         /// <summary>
         /// The contents of the "User.ini" file
         /// </summary>
-        private IniData userConfigData;
+        private IniFile userConfigData;
 
         /// <summary>
         /// The contents of the "UT2004.ini" file
         /// </summary>
-        private IniData ut2004ConfigData;
+        private IniFile ut2004ConfigData;
 
         public ConfigEditor(string filePath)
         {
-            FilePath = filePath;
+            PathToUserIni = Path.Combine(filePath, "User.ini");
+            PathTo2k4Ini = Path.Combine(filePath, "UT2004.ini");
 
-            var parserConfig = new IniParserConfiguration
-            {
-                AllowDuplicateKeys = true,
-                AssigmentSpacer = string.Empty
-            };
+            configParser = new();
+            GetCleanUT2k4IniFileContents();
 
-            configParser = new FileIniDataParser(new IniDataParser(parserConfig));
-
-            userConfigData = configParser.ReadFile(Path.Combine(FilePath, UserConfigFile));
-            ut2004ConfigData = configParser.ReadFile(Path.Combine(FilePath, UT2004ConfigFile));
+            userConfigData = configParser.ReadFile(PathToUserIni);
+            ut2004ConfigData = configParser.ReadFile(PathTo2k4Ini);
         }
 
         /// <summary>
@@ -137,12 +130,45 @@ namespace UnrealTournamentHotfixer.Services
         }
 
         /// <summary>
-        /// Write the config changes to disk
+        /// Write the config changes to disk. UT24k .INI files don't play well
+        /// with the game if they're saved in UTF-8 so make sure that they're
+        /// written to disk in ASCII
         /// </summary>
         public void SaveChanges()
         {
-            configParser.WriteFile(Path.Combine(FilePath, UserConfigFile), userConfigData);
-            configParser.WriteFile(Path.Combine(FilePath, UT2004ConfigFile), ut2004ConfigData);
+            configParser.WriteFile(PathToUserIni, userConfigData, Encoding.ASCII);
+            configParser.WriteFile(PathTo2k4Ini, ut2004ConfigData, Encoding.ASCII);
+        }
+
+        /// <summary>
+        /// For some godforsaken reason, in the UT2004.ini file, the names for
+        /// the four MapListRecord entries have the character \u001b instead of
+        /// a normal empty space character. It's JUST for this file and JUST in
+        /// those four spots. This method will simultaneously read the lines from
+        /// the file for usage in this class and prune the ESC (\u001b) characters. 
+        /// </summary>
+        /// <returns>The contents of the file as a list of strings</returns>
+        private void GetCleanUT2k4IniFileContents()
+        {
+            var ini = File.ReadAllLines(PathTo2k4Ini);
+            List<string> updated = new();
+
+            for (int i = 0; i < ini.Length; i++)
+            {
+                var currentLine = ini[i];
+                if (currentLine.Contains('\u001b'))
+                {
+                    var cleanedLine = Regex.Replace(currentLine, @"[\u001b]", " ");
+                    updated.Add(cleanedLine);
+                }
+                else
+                {
+                    updated.Add(currentLine);
+                }
+            }
+
+            File.WriteAllText(PathTo2k4Ini, string.Empty);
+            File.WriteAllLines(PathTo2k4Ini, updated);
         }
     }
 }
